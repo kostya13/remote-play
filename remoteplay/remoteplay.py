@@ -4,7 +4,7 @@ import subprocess
 from tkinter import *
 import urllib
 
-base = 'http://localhost'
+base = 'http://lenovo'
 content = []
 path = []
 
@@ -61,6 +61,7 @@ listbox = Listbox(master,height=60,width=500)
 
 
 def main():
+    master.title("Remote play")
     listbox.pack(expand=1)
     listbox.bind('<<ListboxSelect>>', immediately)
 

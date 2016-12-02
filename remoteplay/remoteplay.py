@@ -1,3 +1,4 @@
+#!/usr/bin/python3.5
 import requests
 import json
 import subprocess
@@ -39,7 +40,7 @@ def fill_listbox():
 def play(file_name):
     full_path = '{}/{}'.format(full_url(), file_name)
     print(full_path)
-    subprocess.call(["mpv", "--fs", full_path])
+    subprocess.Popen(["mpv", "--fs", full_path])
 
 
 def immediately(e):
@@ -61,7 +62,6 @@ def immediately(e):
                 button['state'] = 'normal'
             else:
                 button['state'] = 'disabled'
-                fill_listbox()
 
 
 def send_to_player():
@@ -73,13 +73,13 @@ def send_to_player():
 
 
 master = Tk()
-listbox = Listbox(master, height=60, width=500)
+listbox = Listbox(master, height=60, width=500, selectmode=EXTENDED)
 button = Button(master, text='Посмотреть', command=send_to_player)
 
 
 def main():
     master.title("Удаленный проигрыватель")
-    button.pack()
+    button.pack(fill='x', expand=1)
     button['state'] = 'disabled'
     listbox.pack(expand=1)
     listbox.bind('<<ListboxSelect>>', immediately)

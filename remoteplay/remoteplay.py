@@ -22,8 +22,12 @@ def is_directory(item):
     return item['type'] == 'directory'
 
 
+def is_video_file(name):
+    return name[-3:].lower() in ('avi', 'mp4', 'mkv')
+
+
 def full_url():
-    return  "{}/{}/".format(base, '/'.join(path))
+    return "{}/{}/".format(base, '/'.join(path))
 
 
 def fill_listbox():
@@ -35,8 +39,7 @@ def fill_listbox():
 def play(file_name):
     full_path = '{}/{}'.format(full_url(), file_name)
     print(full_path)
-    subprocess.call(["mpv", full_path])
-
+    subprocess.call(["mpv", "--fs", full_path])
 
 
 def immediately(e):
@@ -44,6 +47,7 @@ def immediately(e):
         item = content[index]
         name = item['name']
         if is_directory(item):
+            button['state'] = 'disabled'
             listbox.delete(0, END)
             if name == '..':
                 path.pop()
@@ -53,15 +57,30 @@ def immediately(e):
             get_content(full_url())
             fill_listbox()
         else:
-            if name[-3:].lower() in ('avi', 'mp4', 'mkv'):
-                play(name)
+            if is_video_file(name):
+                button['state'] = 'normal'
+            else:
+                button['state'] = 'disabled'
+                fill_listbox()
+
+
+def send_to_player():
+    index = listbox.curselection()[0]
+    item = content[index]
+    name = item['name']
+    if is_video_file(name):
+        play(name)
+
 
 master = Tk()
-listbox = Listbox(master,height=60,width=500)
+listbox = Listbox(master, height=60, width=500)
+button = Button(master, text='Посмотреть', command=send_to_player)
 
 
 def main():
-    master.title("Remote play")
+    master.title("Удаленный проигрыватель")
+    button.pack()
+    button['state'] = 'disabled'
     listbox.pack(expand=1)
     listbox.bind('<<ListboxSelect>>', immediately)
 

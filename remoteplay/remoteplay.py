@@ -37,10 +37,13 @@ def fill_listbox():
         listbox.insert(END, prefix + item['name'])
 
 
-def play(file_name):
-    full_path = '{}/{}'.format(full_url(), file_name)
-    print(full_path)
-    subprocess.Popen(["mpv", "--fs", full_path])
+def play(file_names):
+    to_play = []
+    for file_name in file_names:
+        full_path = '{}/{}'.format(full_url(), file_name)
+        to_play.append(full_path)
+    print(to_play)
+    subprocess.Popen(["mpv", "--fs"] + to_play)
 
 
 def immediately(e):
@@ -65,11 +68,14 @@ def immediately(e):
 
 
 def send_to_player():
-    index = listbox.curselection()[0]
-    item = content[index]
-    name = item['name']
-    if is_video_file(name):
-        play(name)
+    names = []
+    for index in listbox.curselection():
+        item = content[index]
+        name = item['name']
+        if is_video_file(name):
+            names.append(name)
+    if names:
+        play(names)
 
 
 master = Tk()
